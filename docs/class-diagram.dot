@@ -1,0 +1,133 @@
+digraph CLASS {
+  graph [rankdir=TB, fontname="Helvetica", fontsize=16, label=<<B>Class Diagram — SK03 Laboratorium Bioakustik (Laravel 12)</B>>, labelloc=t, bgcolor="white", pad=0.5, nodesep=0.45, ranksep=0.95, splines=spline, newrank=true];
+  node  [shape=plain, fontname="Helvetica", fontsize=10];
+  edge  [fontname="Helvetica", fontsize=9, color="#334155"];
+
+  // ===== Controllers =====
+  subgraph cluster_ctrl { label=<<B>Http / Controllers</B>>; style="rounded,dashed"; color="#94a3b8"; fontsize=11;
+    DashboardController [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#0f172a">
+      <TR><TD BGCOLOR="#1e293b" ><FONT COLOR="white"><B>DashboardController</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">- dashboard : DashboardService</TD></TR>
+      <TR><TD ALIGN="LEFT">+ index() : View</TD></TR></TABLE>>];
+    RekamanController [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#0f172a">
+      <TR><TD BGCOLOR="#1e293b"><FONT COLOR="white"><B>RekamanController</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">- service : RekamanService</TD></TR>
+      <TR><TD ALIGN="LEFT">+ index() / create() / show() / edit()</TD></TR>
+      <TR><TD ALIGN="LEFT">+ store(StoreRekamanRequest) / update(UpdateRekamanRequest)</TD></TR>
+      <TR><TD ALIGN="LEFT">+ destroy(Rekaman)</TD></TR></TABLE>>];
+    SpesiesController [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#0f172a">
+      <TR><TD BGCOLOR="#1e293b"><FONT COLOR="white"><B>SpesiesController</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">- service : SpesiesService</TD></TR>
+      <TR><TD ALIGN="LEFT">+ index() / create() / show() / edit()</TD></TR>
+      <TR><TD ALIGN="LEFT">+ store(StoreSpesiesRequest) / update(…) / destroy(…)</TD></TR></TABLE>>];
+    KategoriSpesiesController [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#0f172a">
+      <TR><TD BGCOLOR="#1e293b"><FONT COLOR="white"><B>KategoriSpesiesController</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">- service : KategoriSpesiesService</TD></TR>
+      <TR><TD ALIGN="LEFT">+ index() / store() / update() / destroy()</TD></TR></TABLE>>];
+    LokasiController [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#0f172a">
+      <TR><TD BGCOLOR="#1e293b"><FONT COLOR="white"><B>LokasiController</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">+ index() / store() / update() / destroy()</TD></TR></TABLE>>];
+    PenelitiController [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#0f172a">
+      <TR><TD BGCOLOR="#1e293b"><FONT COLOR="white"><B>PenelitiController</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">+ index() / store() / update() / destroy()</TD></TR></TABLE>>];
+  }
+
+  // ===== Services =====
+  subgraph cluster_svc { label=<<B>Services (logika bisnis &amp; transaksi)</B>>; style="rounded,dashed"; color="#94a3b8"; fontsize=11;
+    RekamanService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#be123c">
+      <TR><TD BGCOLOR="#be123c"><FONT COLOR="white"><B>«service» RekamanService</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">+ search(filters, perPage) : Paginator</TD></TR>
+      <TR><TD ALIGN="LEFT">+ ringkasan(filters) : array</TD></TR>
+      <TR><TD ALIGN="LEFT">+ create(data) : Rekaman  <I>[transaksi]</I></TD></TR>
+      <TR><TD ALIGN="LEFT">+ update(rekaman, data) : Rekaman  <I>[transaksi]</I></TD></TR>
+      <TR><TD ALIGN="LEFT">+ delete(rekaman) : void  <I>[transaksi]</I></TD></TR>
+      <TR><TD ALIGN="LEFT">- syncPeneliti() / syncAnalisis()</TD></TR></TABLE>>];
+    SpesiesService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#0d9488">
+      <TR><TD BGCOLOR="#0d9488"><FONT COLOR="white"><B>«service» SpesiesService</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">+ search(filters, perPage)</TD></TR>
+      <TR><TD ALIGN="LEFT">+ create(data) / update(spesies, data)  <I>[sync habitat]</I></TD></TR>
+      <TR><TD ALIGN="LEFT">+ delete(spesies)  <I>[guard: tanpa rekaman]</I></TD></TR></TABLE>>];
+    KategoriSpesiesService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#047857">
+      <TR><TD BGCOLOR="#047857"><FONT COLOR="white"><B>«service» KategoriSpesiesService</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">+ search(q, perPage) / create() / update()</TD></TR>
+      <TR><TD ALIGN="LEFT">+ delete(kategori)  <I>[guard: tanpa spesies]</I></TD></TR></TABLE>>];
+    DashboardService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#0284c7">
+      <TR><TD BGCOLOR="#0284c7"><FONT COLOR="white"><B>«service» DashboardService</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">+ statistik() / rekamanPerBulan()</TD></TR>
+      <TR><TD ALIGN="LEFT">+ spesiesPerKategori() / distribusiKualitas()</TD></TR>
+      <TR><TD ALIGN="LEFT">+ rekamanTerbaru(limit)</TD></TR></TABLE>>];
+  }
+
+  // ===== Models =====
+  subgraph cluster_model { label=<<B>Models (Eloquent)</B>>; style="rounded,dashed"; color="#94a3b8"; fontsize=11;
+    Rekaman [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#be123c">
+      <TR><TD BGCOLOR="#fecdd3"><B>Rekaman</B></TD></TR>
+      <TR><TD ALIGN="LEFT">- tanggal_rekam : date</TD></TR>
+      <TR><TD ALIGN="LEFT">- durasi_detik : int</TD></TR>
+      <TR><TD ALIGN="LEFT">- kualitas : string</TD></TR>
+      <TR><TD ALIGN="LEFT">- sample_rate, format, catatan …</TD></TR>
+      <TR><TD ALIGN="LEFT">+ spesies() : BelongsTo</TD></TR>
+      <TR><TD ALIGN="LEFT">+ lokasi() : BelongsTo</TD></TR>
+      <TR><TD ALIGN="LEFT">+ peneliti() : BelongsToMany (peran)</TD></TR>
+      <TR><TD ALIGN="LEFT">+ analisis() : HasMany</TD></TR>
+      <TR><TD ALIGN="LEFT">+ getDurasiFormatAttribute()</TD></TR></TABLE>>];
+    AnalisisRekaman [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#be123c">
+      <TR><TD BGCOLOR="#fecdd3"><B>AnalisisRekaman</B></TD></TR>
+      <TR><TD ALIGN="LEFT">- jenis_analisis : string</TD></TR>
+      <TR><TD ALIGN="LEFT">- frekuensi_dominan_hz : float</TD></TR>
+      <TR><TD ALIGN="LEFT">- tingkat_keyakinan : float</TD></TR>
+      <TR><TD ALIGN="LEFT">+ rekaman() : BelongsTo</TD></TR></TABLE>>];
+    Spesies [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#0d9488">
+      <TR><TD BGCOLOR="#ccfbf1"><B>Spesies</B></TD></TR>
+      <TR><TD ALIGN="LEFT">- nama_ilmiah, nama_umum : string</TD></TR>
+      <TR><TD ALIGN="LEFT">- status_konservasi : string</TD></TR>
+      <TR><TD ALIGN="LEFT">+ STATUS_KONSERVASI : const array</TD></TR>
+      <TR><TD ALIGN="LEFT">+ kategori() : BelongsTo</TD></TR>
+      <TR><TD ALIGN="LEFT">+ habitat() : BelongsToMany</TD></TR>
+      <TR><TD ALIGN="LEFT">+ rekaman() : HasMany</TD></TR></TABLE>>];
+    Habitat [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#0284c7">
+      <TR><TD BGCOLOR="#e0f2fe"><B>Habitat</B></TD></TR>
+      <TR><TD ALIGN="LEFT">- nama : string</TD></TR>
+      <TR><TD ALIGN="LEFT">+ spesies() : BelongsToMany</TD></TR></TABLE>>];
+    KategoriSpesies [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#047857">
+      <TR><TD BGCOLOR="#d1fae5"><B>KategoriSpesies</B></TD></TR>
+      <TR><TD ALIGN="LEFT">- nama : string (unik)</TD></TR>
+      <TR><TD ALIGN="LEFT">- deskripsi : text</TD></TR>
+      <TR><TD ALIGN="LEFT">+ spesies() : HasMany</TD></TR></TABLE>>];
+    Lokasi [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#ca8a04">
+      <TR><TD BGCOLOR="#fef9c3"><B>Lokasi</B></TD></TR>
+      <TR><TD ALIGN="LEFT">- nama, provinsi : string</TD></TR>
+      <TR><TD ALIGN="LEFT">- latitude, longitude : float</TD></TR>
+      <TR><TD ALIGN="LEFT">+ rekaman() : HasMany</TD></TR></TABLE>>];
+    Peneliti [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#7c3aed">
+      <TR><TD BGCOLOR="#ede9fe"><B>Peneliti</B></TD></TR>
+      <TR><TD ALIGN="LEFT">- nama, email : string</TD></TR>
+      <TR><TD ALIGN="LEFT">- institusi, keahlian : string</TD></TR>
+      <TR><TD ALIGN="LEFT">+ rekaman() : BelongsToMany (peran)</TD></TR></TABLE>>];
+  }
+
+  // Dependensi Controller -> Service
+  DashboardController -> DashboardService [style=dashed, arrowhead=open, label=" uses"];
+  RekamanController -> RekamanService [style=dashed, arrowhead=open, label=" uses"];
+  SpesiesController -> SpesiesService [style=dashed, arrowhead=open, label=" uses"];
+  KategoriSpesiesController -> KategoriSpesiesService [style=dashed, arrowhead=open, label=" uses"];
+
+  // Dependensi Service -> Model
+  RekamanService -> Rekaman [style=dashed, arrowhead=open, label=" manages"];
+  RekamanService -> AnalisisRekaman [style=dashed, arrowhead=open];
+  SpesiesService -> Spesies [style=dashed, arrowhead=open, label=" manages"];
+  KategoriSpesiesService -> KategoriSpesies [style=dashed, arrowhead=open];
+  DashboardService -> Rekaman [style=dashed, arrowhead=open];
+
+  // Asosiasi antarmodel (multiplisitas)
+  KategoriSpesies -> Spesies [dir=both, arrowtail=none, arrowhead=vee, headlabel="0..*", taillabel="1"];
+  Spesies -> Habitat [dir=both, arrowtail=none, arrowhead=none, headlabel="0..*", taillabel="0..*", label=" spesies_habitat"];
+  Spesies -> Rekaman [dir=both, arrowtail=none, arrowhead=vee, headlabel="0..*", taillabel="1"];
+  Lokasi -> Rekaman [dir=both, arrowtail=none, arrowhead=vee, headlabel="0..*", taillabel="1"];
+  Rekaman -> Peneliti [dir=both, arrowtail=none, arrowhead=none, headlabel="1..*", taillabel="0..*", label=" rekaman_peneliti (peran)"];
+  Rekaman -> AnalisisRekaman [dir=both, arrowtail=diamond, arrowhead=vee, headlabel="0..*", taillabel="1", label=" composition"];
+
+  {rank=same; DashboardController; RekamanController; SpesiesController; KategoriSpesiesController; LokasiController; PenelitiController;}
+  {rank=same; DashboardService; RekamanService; SpesiesService; KategoriSpesiesService;}
+  {rank=same; KategoriSpesies; Spesies; Habitat; Lokasi; Rekaman; Peneliti; AnalisisRekaman;}
+}

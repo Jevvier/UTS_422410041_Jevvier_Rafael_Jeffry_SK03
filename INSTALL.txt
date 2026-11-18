@@ -1,0 +1,29 @@
+CARA MENJALANKAN SK03 (Laravel 12 + MySQL)
+
+1. Buat skeleton Laravel 12 resmi (di folder terpisah, mis. D:\sk03):
+     composer create-project laravel/laravel:^12.0 sk03-bioakustik
+   Tunggu sampai selesai tanpa error.
+
+2. Salin isi folder overlay ini ke dalam folder sk03-bioakustik,
+   TIMPA file yang sudah ada (app, database, resources, routes, docs, tests, bootstrap/providers.php, README.md).
+
+3. Buka .env (sudah dibuat skeleton), pastikan:
+     DB_CONNECTION=mysql
+     DB_DATABASE=sk03_bioakustik
+     DB_USERNAME=root
+     DB_PASSWORD=          (isi jika ada password)
+     SESSION_DRIVER=database
+     CACHE_STORE=database
+     QUEUE_CONNECTION=database
+     APP_TIMEZONE=Asia/Jakarta
+     APP_LOCALE=id
+
+4. Impor sk03_bioakustik.sql ke database sk03_bioakustik (phpMyAdmin / mysql CLI).
+   JANGAN jalankan php artisan migrate setelah impor.
+
+5. Di terminal VS Code:
+     php artisan key:generate
+     php artisan serve
+   Buka http://127.0.0.1:8000
+
+Catatan: APP_KEY wajib diisi (key:generate). Tanpa itu halaman akan error "No application encryption key".

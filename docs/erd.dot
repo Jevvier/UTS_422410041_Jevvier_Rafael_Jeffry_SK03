@@ -1,0 +1,110 @@
+digraph ERD {
+  graph [rankdir=LR, fontname="Helvetica", fontsize=16, label=<<B>ERD — SK03 Laboratorium Bioakustik (MySQL 8 · utf8mb4)</B>>, labelloc=t, bgcolor="white", pad=0.5, nodesep=0.55, ranksep=1.1, splines=spline];
+  node  [shape=plain, fontname="Helvetica", fontsize=11];
+  edge  [fontname="Helvetica", fontsize=10, color="#334155", arrowsize=0.9, dir=both, arrowtail=tee, arrowhead=crow];
+
+  kategori_spesies [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#047857">
+      <TR><TD BGCOLOR="#047857" COLSPAN="3"><FONT COLOR="white"><B>kategori_spesies</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT" PORT="pk"><B>PK</B></TD><TD ALIGN="LEFT">id</TD><TD ALIGN="LEFT">bigint</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">nama</TD><TD ALIGN="LEFT">varchar(100) UNIQUE</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">deskripsi</TD><TD ALIGN="LEFT">text NULL</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">created_at / updated_at</TD><TD ALIGN="LEFT">timestamp</TD></TR>
+    </TABLE>>];
+
+  spesies [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#0d9488">
+      <TR><TD BGCOLOR="#0d9488" COLSPAN="3"><FONT COLOR="white"><B>spesies</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">id</TD><TD ALIGN="LEFT">bigint</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B></TD><TD ALIGN="LEFT">kategori_spesies_id</TD><TD ALIGN="LEFT">bigint → kategori_spesies (RESTRICT)</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">nama_ilmiah</TD><TD ALIGN="LEFT">varchar(150) UNIQUE</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">nama_umum</TD><TD ALIGN="LEFT">varchar(150) INDEX</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">status_konservasi</TD><TD ALIGN="LEFT">varchar(4) INDEX (LC…DD)</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">deskripsi</TD><TD ALIGN="LEFT">text NULL</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">created_at / updated_at</TD><TD ALIGN="LEFT">timestamp</TD></TR>
+    </TABLE>>];
+
+  habitats [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#0284c7">
+      <TR><TD BGCOLOR="#0284c7" COLSPAN="3"><FONT COLOR="white"><B>habitats</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">id</TD><TD ALIGN="LEFT">bigint</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">nama</TD><TD ALIGN="LEFT">varchar(100) UNIQUE</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">created_at / updated_at</TD><TD ALIGN="LEFT">timestamp</TD></TR>
+    </TABLE>>];
+
+  spesies_habitat [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#64748b">
+      <TR><TD BGCOLOR="#64748b" COLSPAN="3"><FONT COLOR="white"><B>spesies_habitat</B> <I>(pivot)</I></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK,FK</B></TD><TD ALIGN="LEFT">spesies_id</TD><TD ALIGN="LEFT">→ spesies (CASCADE)</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK,FK</B></TD><TD ALIGN="LEFT">habitat_id</TD><TD ALIGN="LEFT">→ habitats (CASCADE)</TD></TR>
+    </TABLE>>];
+
+  lokasi [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#ca8a04">
+      <TR><TD BGCOLOR="#ca8a04" COLSPAN="3"><FONT COLOR="white"><B>lokasi</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">id</TD><TD ALIGN="LEFT">bigint</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">nama</TD><TD ALIGN="LEFT">varchar(150)</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">provinsi</TD><TD ALIGN="LEFT">varchar(100) INDEX</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">latitude / longitude</TD><TD ALIGN="LEFT">decimal(10,7) NULL</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">deskripsi</TD><TD ALIGN="LEFT">text NULL</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">created_at / updated_at</TD><TD ALIGN="LEFT">timestamp</TD></TR>
+    </TABLE>>];
+
+  rekaman [label=<
+    <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#be123c">
+      <TR><TD BGCOLOR="#be123c" COLSPAN="3"><FONT COLOR="white"><B>rekaman</B> <I>(data utama)</I></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">id</TD><TD ALIGN="LEFT">bigint</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B></TD><TD ALIGN="LEFT">spesies_id</TD><TD ALIGN="LEFT">→ spesies (RESTRICT)</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B></TD><TD ALIGN="LEFT">lokasi_id</TD><TD ALIGN="LEFT">→ lokasi (RESTRICT)</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">tanggal_rekam</TD><TD ALIGN="LEFT">date INDEX</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">waktu_mulai</TD><TD ALIGN="LEFT">time NULL</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">durasi_detik</TD><TD ALIGN="LEFT">int unsigned</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">sample_rate</TD><TD ALIGN="LEFT">int unsigned (48000)</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">format</TD><TD ALIGN="LEFT">varchar(10) WAV/FLAC/MP3</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">kualitas</TD><TD ALIGN="LEFT">varchar(10) INDEX</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">kondisi_cuaca</TD><TD ALIGN="LEFT">varchar(60) NULL</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">catatan</TD><TD ALIGN="LEFT">text NULL</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">created_at / updated_at</TD><TD ALIGN="LEFT">timestamp</TD></TR>
+    </TABLE>>];
+
+  rekaman_peneliti [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#64748b">
+      <TR><TD BGCOLOR="#64748b" COLSPAN="3"><FONT COLOR="white"><B>rekaman_peneliti</B> <I>(pivot)</I></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK,FK</B></TD><TD ALIGN="LEFT">rekaman_id</TD><TD ALIGN="LEFT">→ rekaman (CASCADE)</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK,FK</B></TD><TD ALIGN="LEFT">peneliti_id</TD><TD ALIGN="LEFT">→ peneliti (CASCADE)</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">peran</TD><TD ALIGN="LEFT">varchar(50) (PJ / Anggota)</TD></TR>
+    </TABLE>>];
+
+  peneliti [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#7c3aed">
+      <TR><TD BGCOLOR="#7c3aed" COLSPAN="3"><FONT COLOR="white"><B>peneliti</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">id</TD><TD ALIGN="LEFT">bigint</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">nama</TD><TD ALIGN="LEFT">varchar(150)</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">email</TD><TD ALIGN="LEFT">varchar(150) UNIQUE</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">institusi / keahlian</TD><TD ALIGN="LEFT">varchar(150) NULL</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">created_at / updated_at</TD><TD ALIGN="LEFT">timestamp</TD></TR>
+    </TABLE>>];
+
+  analisis_rekaman [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" COLOR="#be123c">
+      <TR><TD BGCOLOR="#fb7185" COLSPAN="3"><FONT COLOR="white"><B>analisis_rekaman</B> <I>(detail)</I></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT">id</TD><TD ALIGN="LEFT">bigint</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B></TD><TD ALIGN="LEFT">rekaman_id</TD><TD ALIGN="LEFT">→ rekaman (CASCADE)</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">jenis_analisis</TD><TD ALIGN="LEFT">varchar(100)</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">frekuensi_dominan_hz</TD><TD ALIGN="LEFT">decimal(8,2) NULL</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">tingkat_keyakinan</TD><TD ALIGN="LEFT">decimal(5,2) 0–100</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">hasil</TD><TD ALIGN="LEFT">text NULL</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">created_at / updated_at</TD><TD ALIGN="LEFT">timestamp</TD></TR>
+    </TABLE>>];
+
+  // Relasi one-to-many (1 ─< N)
+  kategori_spesies -> spesies [label=" 1 : N"];
+  spesies -> rekaman [label=" 1 : N"];
+  lokasi -> rekaman [label=" 1 : N"];
+  rekaman -> analisis_rekaman [label=" 1 : N  (detail)"];
+  // Many-to-many melalui tabel pivot
+  spesies -> spesies_habitat [label=" 1 : N"];
+  habitats -> spesies_habitat [label=" 1 : N"];
+  rekaman -> rekaman_peneliti [label=" 1 : N"];
+  peneliti -> rekaman_peneliti [label=" 1 : N"];
+}
